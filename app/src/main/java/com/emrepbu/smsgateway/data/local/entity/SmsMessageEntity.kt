@@ -2,6 +2,8 @@ package com.emrepbu.smsgateway.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.emrepbu.smsgateway.data.local.converter.StringListConverter
 import com.emrepbu.smsgateway.domain.model.SmsMessage
 
 /**
@@ -9,7 +11,7 @@ import com.emrepbu.smsgateway.domain.model.SmsMessage
  * This is part of the data layer and follows the repository pattern.
  */
 @Entity(tableName = "sms_messages")
-// TODO: add type converter for String List
+@TypeConverters(StringListConverter::class)
 data class SmsMessageEntity(
     @PrimaryKey
     val id: String,
