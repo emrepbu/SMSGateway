@@ -15,7 +15,7 @@ import javax.inject.Inject
  * It handles email creation, sending, and updating SMS forward status.
  */
 class SendEmailForSmsUseCase @Inject constructor(
-    private val emailReposity: EmailRepository,
+    private val emailRepository: EmailRepository,
     private val smsRepository: SmsRepository,
 ) {
     /**
@@ -30,7 +30,7 @@ class SendEmailForSmsUseCase @Inject constructor(
         emailAddresses: List<String>,
     ): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val emailConfig = emailReposity.getEmailConfig()
+            val emailConfig = emailRepository.getEmailConfig()
                 ?: return@withContext Result.failure(Exception("Email configuration not found"))
 
             val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault())
@@ -47,7 +47,7 @@ class SendEmailForSmsUseCase @Inject constructor(
             |This email was automatically sent by the SMS Reader app.
             |""".trimMargin()
 
-            val result = emailReposity.sendEmail(
+            val result = emailRepository.sendEmail(
                 to = emailAddresses,
                 subject = subject,
                 body = body,
