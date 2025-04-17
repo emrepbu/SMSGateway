@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SMS Gateway"
+rootProject.name = "SMSGateway"
 include(":app")
