@@ -39,6 +39,14 @@ android {
     buildFeatures {
         compose = true
     }
+    packaging {
+        resources {
+            excludes += listOf(
+                "/META-INF/NOTICE.md",
+                "/META-INF/LICENSE.md"
+            )
+        }
+    }
 }
 
 dependencies {
@@ -60,6 +68,7 @@ dependencies {
 
     implementation(libs.gson)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.jakarta.mail.api)
 
     testImplementation(libs.junit)
 
