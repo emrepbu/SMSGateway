@@ -1,4 +1,4 @@
-package com.emrepbu.smsgateway.work
+package com.example.smsgateway.work
 
 import android.content.Context
 import android.util.Log
@@ -18,14 +18,17 @@ class ProcessSmsWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val smsRepository: SmsRepository,
-    private val processNewSmsUseCase: ProcessNewSmsUseCase,
+    private val processNewSmsUseCase: ProcessNewSmsUseCase
 ) : CoroutineWorker(context, params) {
+
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         try {
             val smsId = inputData.getString(KEY_SMS_ID)
                 ?: return@withContext Result.failure()
-            val sender = inputData.getString(KEY_SMS_SENDER) ?: "Unknown"
-            val body = inputData.getString(KEY_SMS_BODY) ?: ""
+            val sender = inputData.getString(KEY_SMS_SENDER)
+                ?: "Unknown"
+            val body = inputData.getString(KEY_SMS_BODY)
+                ?: ""
             val timestamp = inputData.getLong(KEY_SMS_TIMESTAMP, System.currentTimeMillis())
 
             val sms = SmsMessage(
@@ -37,14 +40,16 @@ class ProcessSmsWorker @AssistedInject constructor(
                 type = 1,
                 isForwarded = false
             )
+
             smsRepository.insertMessage(sms)
 
             val result = processNewSmsUseCase(sms)
-            Log.d(TAG, "Resul: ${result.message}")
+
+            Log.d(TAG, "SMS Processing Result: ${result.message}")
 
             Result.success()
         } catch (e: Exception) {
-            Log.d(TAG, "Error: $e")
+            Log.e(TAG, "Error occurred while processing SMS", e)
             Result.failure()
         }
     }
