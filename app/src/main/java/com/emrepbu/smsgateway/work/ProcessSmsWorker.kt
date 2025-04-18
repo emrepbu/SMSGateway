@@ -1,4 +1,4 @@
-package com.emrepbu.smsgateway.work
+package com.example.smsgateway.work
 
 import android.content.Context
 import android.util.Log
