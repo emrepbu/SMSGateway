@@ -311,4 +311,9 @@ The app features a clean, modern interface built with Jetpack Compose:
 
 ## 📖 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is protected under a NonCommercial License that restricts commercial use without explicit permission from the copyright holder. See the [LICENSE](LICENSE) file for details.
+
+**Key licensing terms:**
+- Free for personal, educational, and non-commercial use
+- Commercial use requires prior written permission
+- Contact information for commercial licensing is provided in the LICENSE file
