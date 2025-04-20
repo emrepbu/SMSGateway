@@ -1,0 +1,97 @@
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Styles and definitions -->
+  <defs>
+    <linearGradient id="headerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4776E6" />
+      <stop offset="100%" stop-color="#8E54E9" />
+    </linearGradient>
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,0.3)" />
+    </filter>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4776E6" />
+    </marker>
+  </defs>
+
+  <!-- Page title -->
+  <rect x="10" y="10" width="780" height="50" rx="10" fill="url(#headerGradient)" filter="url(#dropShadow)" />
+  <text x="400" y="42" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">SMS Gateway Architecture and Data Flow</text>
+
+  <!-- Phone and Incoming SMS -->
+  <rect x="40" y="100" width="120" height="200" rx="10" fill="#f5f5f5" stroke="#ccc" stroke-width="2" filter="url(#dropShadow)" />
+  <rect x="50" y="120" width="100" height="160" rx="5" fill="#fff" stroke="#ccc" stroke-width="1" />
+  <circle cx="100" cy="290" r="10" fill="#e0e0e0" stroke="#ccc" stroke-width="1" />
+  <text x="100" y="110" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333" text-anchor="middle">Mobile Phone</text>
+  
+  <!-- SMS Message Icon -->
+  <rect x="65" y="150" width="70" height="40" rx="5" fill="#e3f2fd" stroke="#2196f3" stroke-width="1" />
+  <text x="100" y="175" font-family="Arial, sans-serif" font-size="12" fill="#0d47a1" text-anchor="middle">Incoming SMS</text>
+  <path d="M120 200 L140 220 L170 190" stroke="#2196f3" stroke-width="2" fill="none" />
+  
+  <!-- Application Components - horizontal flow -->
+  <!-- 1. SMS Receiver -->
+  <rect x="220" y="100" width="120" height="80" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" filter="url(#dropShadow)" />
+  <text x="280" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2e7d32" text-anchor="middle">SMS Receiver</text>
+  <text x="280" y="160" font-family="Arial, sans-serif" font-size="12" fill="#333" text-anchor="middle">BroadcastReceiver</text>
+  
+  <!-- 2. WorkManager -->
+  <rect x="380" y="100" width="120" height="80" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" filter="url(#dropShadow)" />
+  <text x="440" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2e7d32" text-anchor="middle">WorkManager</text>
+  <text x="440" y="160" font-family="Arial, sans-serif" font-size="12" fill="#333" text-anchor="middle">ProcessSmsWorker</text>
+  
+  <!-- 3. Database Storage -->
+  <rect x="540" y="100" width="120" height="80" rx="8" fill="#e3f2fd" stroke="#0d47a1" stroke-width="2" filter="url(#dropShadow)" />
+  <text x="600" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0d47a1" text-anchor="middle">Room Database</text>
+  <text x="600" y="160" font-family="Arial, sans-serif" font-size="12" fill="#333" text-anchor="middle">Store Message</text>
+  
+  <!-- Filter Repository -->
+  <rect x="540" y="200" width="120" height="80" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2" filter="url(#dropShadow)" />
+  <text x="600" y="230" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#e65100" text-anchor="middle">Filter Rules</text>
+  <text x="600" y="260" font-family="Arial, sans-serif" font-size="12" fill="#333" text-anchor="middle">FilterRuleRepository</text>
+  
+  <!-- Email Service -->
+  <rect x="380" y="300" width="120" height="80" rx="8" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2" filter="url(#dropShadow)" />
+  <text x="440" y="330" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7b1fa2" text-anchor="middle">Email Service</text>
+  <text x="440" y="360" font-family="Arial, sans-serif" font-size="12" fill="#333" text-anchor="middle">SendEmailForSmsUseCase</text>
+  
+  <!-- Email Recipient -->
+  <rect x="220" y="300" width="120" height="80" rx="8" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2" filter="url(#dropShadow)" />
+  <text x="280" y="330" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7b1fa2" text-anchor="middle">Email Client</text>
+  <text x="280" y="360" font-family="Arial, sans-serif" font-size="12" fill="#333" text-anchor="middle">Forwarded Message</text>
+  
+  <!-- UI Component -->
+  <rect x="60" y="400" width="680" height="60" rx="8" fill="#ede7f6" stroke="#4527a0" stroke-width="2" filter="url(#dropShadow)" />
+  <text x="400" y="435" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4527a0" text-anchor="middle">Jetpack Compose UI - Message List, Filter Configuration, Email Settings</text>
+  
+  <!-- Connection Arrows -->
+  <!-- Phone to SMS Receiver -->
+  <path d="M160 150 L220 140" stroke="#4776E6" stroke-width="2" fill="none" marker-end="url(#arrowhead)" />
+  
+  <!-- SMS Receiver to WorkManager -->
+  <path d="M340 140 L380 140" stroke="#4776E6" stroke-width="2" fill="none" marker-end="url(#arrowhead)" />
+  
+  <!-- WorkManager to Database -->
+  <path d="M500 140 L540 140" stroke="#4776E6" stroke-width="2" fill="none" marker-end="url(#arrowhead)" />
+  
+  <!-- WorkManager to Filter Rules -->
+  <path d="M440 180 L440 220 L540 220" stroke="#4776E6" stroke-width="2" fill="none" marker-end="url(#arrowhead)" />
+  
+  <!-- Filter Rules to Email Service -->
+  <path d="M600 280 L600 330 L500 330" stroke="#4776E6" stroke-width="2" fill="none" marker-end="url(#arrowhead)" />
+  
+  <!-- Email Service to Email Client -->
+  <path d="M380 340 L340 340" stroke="#4776E6" stroke-width="2" fill="none" marker-end="url(#arrowhead)" />
+  
+  <!-- UI connections -->
+  <path d="M100 300 L100 400" stroke="#4776E6" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrowhead)" />
+  <path d="M600 180 L700 180 L700 400" stroke="#4776E6" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrowhead)" />
+  
+  <!-- Legend -->
+  <rect x="580" y="450" width="200" height="40" rx="5" fill="white" stroke="#ccc" stroke-width="1" />
+  <circle cx="600" y="470" r="8" fill="#4776E6" />
+  <line x1="620" y1="470" x2="640" y2="470" stroke="#4776E6" stroke-width="2" stroke-dasharray="5,5" />
+  <text x="650" y="475" font-family="Arial, sans-serif" font-size="12" fill="#333">UI Interaction</text>
+  <circle cx="700" y="470" r="8" fill="#4776E6" />
+  <line x1="720" y1="470" x2="740" y2="470" stroke="#4776E6" stroke-width="2" />
+  <text x="750" y="475" font-family="Arial, sans-serif" font-size="12" fill="#333">Data Flow</text>
+</svg>
