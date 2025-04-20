@@ -1,98 +1,92 @@
-name: Android CI/CD
-
+name: Android CI
+env:
+  # Module name for your project
+  app_module: app
+  # Project name
+  project_name: SmsGateway
 on:
   push:
-    branches: [ main, master ]
-    tags:
-      - 'v*'
-  pull_request:
-    branches: [ main, master ]
-
+    branches:
+      - 'main'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - uses: actions/checkout@v4
       
-      - name: Build with Gradle
-        run: ./gradlew build
-
-      - name: Run Tests
-        run: ./gradlew test
-
-      - name: Upload Debug APK
-        uses: actions/upload-artifact@v3
+      # Set Current Date As Env Variable
+      - name: Set current date as env variable
+        run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      
+      # Set Repository Name As Env Variable
+      - name: Set repository name as env variable
+        run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+      
+      # Extract version from build.gradle.kts
+      - name: Extract version information
+        run: |
+          # App version
+          APP_VERSION=$(grep -o 'versionName = "[^"]*"' ${{ env.app_module }}/build.gradle.kts | cut -d'"' -f2)
+          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
+          
+          # Use app version for the release tag
+          echo "RELEASE_VERSION=$APP_VERSION" >> $GITHUB_ENV
+      
+      - name: Set Up JDK
+        uses: actions/setup-java@v4
         with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
-
-  release:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
           distribution: 'temurin'
-          cache: gradle
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Build Release APK
-        run: ./gradlew assembleRelease
-
-      - name: Sign Android release
-        uses: r0adkll/sign-android-release@v1
+          java-version: '11'
+          cache: 'gradle'
+      
+      # App Build
+      - name: Build App APK
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
+          ./gradlew assembleRelease
+      
+      # Upload App Debug APK as artifact
+      - name: Upload App APK Debug
+        uses: actions/upload-artifact@v4
         with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "33.0.0"
-
-      - name: Get Version Name
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-
+          name: ${{ env.date_today }} - ${{ env.project_name }} - Debug APK
+          path: ${{ env.app_module }}/build/outputs/apk/debug/
+      
+      # Upload App Release APK as artifact
+      - name: Upload App APK Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.date_today }} - ${{ env.project_name }} - Release APK
+          path: ${{ env.app_module }}/build/outputs/apk/release/
+          
+      # Rename APKs for easier identification
+      - name: Rename APKs
+        run: |
+          mkdir -p release_files
+          cp ${{ env.app_module }}/build/outputs/apk/debug/*.apk release_files/SmsGateway-${{ env.APP_VERSION }}-debug.apk
+          cp ${{ env.app_module }}/build/outputs/apk/release/*.apk release_files/SmsGateway-${{ env.APP_VERSION }}-release.apk
+      
+      # Create GitHub Release
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          name: Release ${{ steps.get_version.outputs.VERSION }}
+          tag_name: v${{ env.RELEASE_VERSION }}
+          name: Release v${{ env.RELEASE_VERSION }}
+          body: |
+            SmsGateway Release v${{ env.RELEASE_VERSION }} (${{ env.date_today }})
+            
+            This release contains:
+            - SmsGateway APK v${{ env.APP_VERSION }} (Debug & Release)
+            
+            Built automatically using GitHub Actions.
           draft: false
           prerelease: false
           files: |
-            app/build/outputs/apk/release/app-release-signed.apk
-            app/build/outputs/apk/release/output-metadata.json
+            release_files/SmsGateway-${{ env.APP_VERSION }}-debug.apk
+            release_files/SmsGateway-${{ env.APP_VERSION }}-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
