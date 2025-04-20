@@ -1,5 +1,7 @@
 # SMS Gateway
 
+![Status](https://img.shields.io/badge/Status-Development-yellow)
+
 SMS Gateway is an Android application that captures incoming SMS messages, filters them based on customizable rules, and forwards them to specified email addresses. This application is ideal for monitoring important notifications, security alerts, or business messages without constantly checking your phone.
 
 <img src="https://github.com/user-attachments/assets/b5a8c7b1-62c2-4c5d-b2bf-f42f238ef0fa" width="200"/>
