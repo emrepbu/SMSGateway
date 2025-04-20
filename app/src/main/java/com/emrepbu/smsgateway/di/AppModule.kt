@@ -20,9 +20,19 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.annotation.Signed
 import javax.inject.Singleton
 
+/**
+ * AppModule is a Dagger Hilt module that provides dependencies for the application.
+ * It is installed in the SingletonComponent, meaning that the provided instances
+ * will be available throughout the entire application lifecycle as singletons.
+ *
+ * This module is responsible for providing the following:
+ *  - The Room database (SmsDatabase)
+ *  - Data Access Objects (DAOs) for SMS and Filter Rules (SmsDao, FilterRuleDao)
+ *  - The WorkManager instance
+ *  - Repositories for SMS, Filter Rules, and Email (SmsRepository, FilterRuleRepository, EmailRepository)
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {

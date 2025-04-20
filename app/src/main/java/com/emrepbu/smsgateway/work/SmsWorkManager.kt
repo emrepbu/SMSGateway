@@ -10,6 +10,14 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+/**
+ * `SmsWorkManager` is a class responsible for managing scheduled background work related to SMS checks.
+ * It utilizes the Android WorkManager library to enqueue and cancel periodic tasks.
+ *
+ * This class is designed to be used with Dependency Injection (e.g., Hilt) for easy instantiation and testing.
+ *
+ * @property context The application context, used to get an instance of the WorkManager.
+ */
 class SmsWorkManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
@@ -21,7 +29,7 @@ class SmsWorkManager @Inject constructor(
             .build()
 
         val periodicWorkRequest = PeriodicWorkRequestBuilder<PeriodicSmsCheckWorker>(
-            15, TimeUnit.MINUTES
+            1, TimeUnit.MINUTES
         )
             .setConstraints(constraints)
             .build()

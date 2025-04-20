@@ -6,42 +6,38 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 /**
- * Main use case that orchestrates the entire SMS processing workflow:
- * 1. Retrieves enabled filter rules
- * 2. Applies filters to the SMS message
- * 3. If matches are found, forwards the SMS to email addresses
- * 4. Returns the result of the operation
+ * [ProcessNewSmsUseCase] is a use case class responsible for processing a newly received SMS message.
+ *
+ * It orchestrates the following steps:
+ * 1. **Retrieving Enabled Filter Rules:** Fetches all enabled filter rules from the [FilterRuleRepository].
+ * 2. **Applying Filter Rules:** Applies the fetched filter rules to the incoming SMS using the [ApplyFilterUseCase].
+ * 3. **Determining Matches:** Checks if any filter rules matched the SMS content.
+ * 4. **Extracting Email Addresses:** If matches are found, it extracts the associated email addresses from the matched rules.
+ * 5. **Sending Email:** Sends the SMS content to the extracted email addresses using the [SendEmailForSmsUseCase].
+ * 6. **Returning Result:** Returns a [ForwardResult] indicating the success or failure of the process and provides relevant details.
+ *
+ * @property filterRuleRepository Repository for accessing filter rules.
+ * @property applyFilterUseCase Use case for applying filter rules to SMS messages.
+ * @property sendEmailForSmsUseCase Use case for sending an email containing the SMS content.
  */
 class ProcessNewSmsUseCase @Inject constructor(
     private val filterRuleRepository: FilterRuleRepository,
     private val applyFilterUseCase: ApplyFilterUseCase,
     private val sendEmailForSmsUseCase: SendEmailForSmsUseCase,
 ) {
-    /**
-     * Processes a new SMS message by filtering and forwarding it if necessary.
-     *
-     * @param sms The SMS message to process
-     * @return ForwardResult indicating success or failure and additional details
-     */
     suspend operator fun invoke(sms: SmsMessage): ForwardResult {
-        // Get all enabled filter rules from the repository
         val enabledRules = filterRuleRepository.getEnabledFilterRules().first()
 
-        // Apply filter rules to the SMS message to find matches
         val matches = applyFilterUseCase(sms, enabledRules)
 
-        // If no filter rules matched, return early with failure result
         if (matches.isEmpty()) {
             return ForwardResult(false, emptyList(), "No filter rules matched")
         }
 
-        // Collect all unique email addresses from matched rules
         val allEmailAddresses = matches.flatMap { it.rule.emailAddresses }.distinct()
 
-        // Forward the SMS to all collected email addresses
         val result = sendEmailForSmsUseCase(sms, allEmailAddresses)
 
-        // Return appropriate result based on email forwarding success/failure
         return if (result.isSuccess) {
             ForwardResult(
                 true,
@@ -56,17 +52,18 @@ class ProcessNewSmsUseCase @Inject constructor(
             )
         }
     }
-
-    /**
-     * Data class representing the result of the SMS forwarding operation.
-     *
-     * @property isSuccess Whether the operation was successful
-     * @property emailsSentT List of email addresses the SMS was sent to
-     * @property message Human-readable message describing the result
-     */
-    data class ForwardResult(
-        val isSuccess: Boolean,
-        val emailsSentT: List<String>,
-        val message: String,
-    )
 }
+
+/**
+ * Represents the result of a forward operation, typically email forwarding.
+ *
+ * @property isSuccess Indicates whether the forwarding operation was successful.
+ * @property emailsSentTo A list of email addresses to which the message was successfully forwarded.
+ * @property message A descriptive message providing details about the outcome of the operation.
+ *                    This message can contain success or failure details.
+ */
+data class ForwardResult(
+    val isSuccess: Boolean,
+    val emailsSentT: List<String>,
+    val message: String,
+)

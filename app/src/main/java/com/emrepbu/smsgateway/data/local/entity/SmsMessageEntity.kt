@@ -6,10 +6,6 @@ import androidx.room.TypeConverters
 import com.emrepbu.smsgateway.data.local.converter.StringListConverter
 import com.emrepbu.smsgateway.domain.model.SmsMessage
 
-/**
- * Entity class representing an SMS message in the local database.
- * This is part of the data layer and follows the repository pattern.
- */
 @Entity(tableName = "sms_messages")
 @TypeConverters(StringListConverter::class)
 data class SmsMessageEntity(

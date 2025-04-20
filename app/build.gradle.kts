@@ -43,7 +43,15 @@ android {
         resources {
             excludes += listOf(
                 "/META-INF/NOTICE.md",
-                "/META-INF/LICENSE.md"
+                "/META-INF/LICENSE.md",
+                "/META-INF/INDEX.LIST",
+                "/META-INF/*.kotlin_module",
+                "META-INF/mimetypes.default",
+                "META-INF/mailcap.default",
+            )
+
+            merges += listOf(
+                "META-INF/services/*",
             )
         }
     }
@@ -73,7 +81,7 @@ dependencies {
 
     implementation(libs.gson)
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.jakarta.mail.api)
+    implementation(libs.jakarta.mail)
 
     testImplementation(libs.junit)
 
@@ -85,4 +93,3 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
-s

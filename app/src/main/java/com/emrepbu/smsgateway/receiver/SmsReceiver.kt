@@ -8,15 +8,29 @@ import android.util.Log
 import androidx.work.WorkManager
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
+import com.emrepbu.smsgateway.utils.AppEvents
 import com.emrepbu.smsgateway.work.ProcessSmsWorker
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * SmsReceiver is a [BroadcastReceiver] responsible for listening to incoming SMS messages.
+ *
+ * It intercepts the `android.provider.Telephony.SMS_RECEIVED` broadcast action,
+ * extracts SMS details like sender, message body, and timestamp, and then enqueues
+ * a [ProcessSmsWorker] to handle further processing of the SMS in a background thread.
+ *
+ * This receiver also notifies the application about the received SMS via [AppEvents].
+ */
 @AndroidEntryPoint
 class SmsReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var workManager: WorkManager
+
     override fun onReceive(context: Context?, intent: Intent) {
         if (intent.action != Telephony.Sms.Intents.SMS_RECEIVED_ACTION) {
             return
@@ -44,6 +58,10 @@ class SmsReceiver : BroadcastReceiver() {
                 .build()
 
             workManager.enqueue(processWorkRequest)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                AppEvents.notifySmsReceived()
+            }
         }
     }
 

@@ -11,20 +11,19 @@ import java.util.Locale
 import javax.inject.Inject
 
 /**
- * Use case responsible for forwarding SMS messages to specified email addresses.
- * It handles email creation, sending, and updating SMS forward status.
+ * Use case responsible for sending an email notification for an SMS message.
+ *
+ * This class encapsulates the logic for formatting an SMS message into an email,
+ * retrieving email configuration, sending the email, and updating the SMS message's
+ * forwarding status in the repository.
+ *
+ * @property emailRepository The repository for handling email-related operations.
+ * @property smsRepository The repository for handling SMS-related operations.
  */
 class SendEmailForSmsUseCase @Inject constructor(
     private val emailRepository: EmailRepository,
     private val smsRepository: SmsRepository,
 ) {
-    /**
-     * Forwards an SMS message to the specified email addresses.
-     *
-     * @param sms The SMS message to be forwarded
-     * @param emailAddresses List of recipient email addresses
-     * @return Result indicating success or failure of the operation
-     */
     suspend operator fun invoke(
         sms: SmsMessage,
         emailAddresses: List<String>,
@@ -44,7 +43,7 @@ class SendEmailForSmsUseCase @Inject constructor(
             |Message:
             |${sms.message}
             |
-            |This email was automatically sent by the SMS Reader app.
+            |This email was automatically sent by the SMS Gateway app.
             |""".trimMargin()
 
             val result = emailRepository.sendEmail(
@@ -54,7 +53,6 @@ class SendEmailForSmsUseCase @Inject constructor(
                 config = emailConfig,
             )
 
-            // If email was sent successfully, update the SMS status in the database
             if (result.isSuccess) {
                 smsRepository.updateSmsForwardStatus(
                     id = sms.id,
