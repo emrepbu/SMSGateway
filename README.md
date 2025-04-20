@@ -157,6 +157,20 @@ The app features a clean, modern interface built with Jetpack Compose:
 - `ApplyFilterUseCase`: Applies filter rules to SMS messages
 - `SendEmailForSmsUseCase`: Handles email forwarding
 
+## Project Status
+
+⚠️ **This project is currently in development and is intended for demonstration purposes only.**
+
+This is a proof-of-concept application. It is not intended for production use in its current state. Features may be incomplete, and breaking changes might occur in future updates.
+
+Feel free to use this codebase for learning and experimentation, but be aware of the following limitations:
+- Security features are minimal
+- Error handling may not cover all edge cases
+- Performance optimizations are limited
+- Documentation is still in progress
+
+Contributions, suggestions, and feedback are welcome!
+
 ## 📖 License
 
 This project is protected under a NonCommercial License that restricts commercial use without explicit permission from the copyright holder. See the [LICENSE](LICENSE) file for details.
