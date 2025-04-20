@@ -3,7 +3,7 @@ env:
   # Module names for your project
   app_module: app
   # Project name
-  project_name: KtorConnect
+  project_name: SmsGateway
 on:
   push:
     branches:
@@ -77,7 +77,7 @@ jobs:
           tag_name: v${{ env.RELEASE_VERSION }}
           name: Release v${{ env.RELEASE_VERSION }}
           body: |
-            KtorConnect Release v${{ env.RELEASE_VERSION }} (${{ env.date_today }})
+            SmsGateway Release v${{ env.RELEASE_VERSION }} (${{ env.date_today }})
             
             This release contains:
             - SmsGateway APK v${{ env.APP_VERSION }} (Debug & Release)
