@@ -35,6 +35,9 @@ fun SmsGatewayNavHost(
                 onNavigateToEmailConfig = {
                     navController.navigate("email_config")
                 },
+                onNavigateToApiConfig = {
+                    navController.navigate("api_config")
+                },
                 onBack = navController::popBackStack,
             )
         }
@@ -69,6 +72,12 @@ fun SmsGatewayNavHost(
 
         composable("email_config") {
             EmailConfigScreen(
+                onBack = navController::popBackStack,
+            )
+        }
+
+        composable("api_config") {
+            ApiConfigScreen(
                 onBack = navController::popBackStack,
             )
         }
