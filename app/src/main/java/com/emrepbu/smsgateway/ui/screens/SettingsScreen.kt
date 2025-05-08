@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +23,7 @@ import javax.inject.Inject
 fun SettingsScreen(
     onNavigateToFilterRules: () -> Unit,
     onNavigateToEmailConfig: () -> Unit,
+    onNavigateToApiConfig: () -> Unit,
     onBack: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
@@ -50,6 +52,15 @@ fun SettingsScreen(
                 title = "Email Configuration",
                 description = "Set up SMTP server details for email forwarding",
                 onClick = onNavigateToEmailConfig
+            )
+
+            Divider()
+
+            SettingItem(
+                icon = Icons.Default.Face,
+                title = "API Configuration",
+                description = "Set up API integration for SMS forwarding",
+                onClick = onNavigateToApiConfig
             )
 
             Divider()
